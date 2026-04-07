@@ -1,0 +1,17 @@
+# Recon outputs
+recon_*/
+
+# Output files
+*.txt
+
+# Logs / temp
+*.log
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Go
+bin/
+pkg/
