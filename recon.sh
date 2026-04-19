@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Passive Recon Script v1.0
+# Passive Recon Script v2.0
 # Author: Serhii Chornobai
 # Date created: 08.04.2026
-# Last modified: 08.04.2026
+# Last modified: 19.04.2026
 #
 # Description:
 #   Passively enumerates subdomains via subfinder + assetfinder, deduplicates results,
@@ -18,6 +18,9 @@ SUBFINDER_THREADS=10
 HTTPX_THREADS=15
 HTTPX_RATE=20
 
+TARGET_DOMAIN=""
+RECON_DIR=""
+
 # COLORS
 
 GREEN="\e[32m"
@@ -28,12 +31,35 @@ RESET="\e[0m"
 
 # INPUT VALIDATION
 
-if [ $# -lt 1 ]; then
-    echo -e "${RED}[!] Usage: $0 <domain>${RESET}"
+while getopts ":d:t:r:o:" opt; do
+    case $opt in
+        d) TARGET_DOMAIN="$OPTARG" ;;
+        t) SUBFINDER_THREADS="$OPTARG"
+           HTTPX_THREADS="$OPTARG"
+           ;;
+        r) HTTPX_RATE="$OPTARG" ;;
+        o) RECON_DIR="$OPTARG" ;;
+        \?)
+            echo -e "${RED}[!] Usage: $0 -d <domain> [-t threads] [-r rate] [-o output]${RESET}"
+            exit 1
+            ;;
+        :)
+            echo -e "${RED}[!] Option -${OPTARG} requires an argument.${RESET}"
+            echo -e "${RED}[!] Usage: $0 -d <domain> [-t threads] [-r rate] [-o output]${RESET}"
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ -z "$TARGET_DOMAIN" ]; then
+    echo -e "${RED}[!] Usage: $0 -d <domain> [-t threads] [-r rate] [-o output]${RESET}"
     exit 1
 fi
 
-RECON_DIR="recon_${TARGET_DOMAIN}"
+if [ -z "$RECON_DIR" ]; then
+    RECON_DIR="recon_${TARGET_DOMAIN}"
+fi
 
 # DEPENDENCY CHECK
 

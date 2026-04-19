@@ -24,6 +24,7 @@ Built as part of my hands-on learning in web security and bug bounty hunting. Th
 - Graceful exit if no subdomains are found - no empty `httpx` runs
 - Dependency check with install instructions on failure
 - Color-coded terminal output
+- Full CLI argument parsing via `getopts` (`-d`, `-t`, `-r`, `-o`)
 
 ---
 
@@ -33,10 +34,20 @@ Built as part of my hands-on learning in web security and bug bounty hunting. Th
 git clone https://github.com/forgot2sanitize/passive-recon.git
 cd passive-recon
 chmod +x recon.sh
-./recon.sh example.com
+./recon.sh -d <domain> [-t threads] [-r rate] [-o output]
 ```
 
-Output is saved to `recon_example.com/`:
+**Examples**
+
+```bash
+# Basic run (defaults for threads, rate, and output directory)
+./recon.sh -d example.com
+
+# Custom threads, rate limit, and output directory
+./recon.sh -d example.com -t 50 -r 100 -o custom_dir
+```
+
+By default, output is written under `recon_<domain>/` (for example, `recon_example.com/` when targeting `example.com`). Use `-o` to choose a different directory.
 
 ```
 recon_example.com/
@@ -64,7 +75,6 @@ Make sure `~/go/bin` is in your `$PATH` and comes **before** any Python paths to
 
 ## Planned Improvements
 
-- CLI flags for custom threads, rate limit, and output path
 - URL discovery (`gau`, `waybackurls`)
 - Technology fingerprinting and screenshots
 
